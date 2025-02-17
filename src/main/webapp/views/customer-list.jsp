@@ -1,4 +1,4 @@
-<%@ page import="com.example.demo1.model.Customer" %>
+<%@ page import="com.example.vehiclereservationapp.model.Customer" %>
 <%@ page import="java.util.List" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -10,11 +10,46 @@
 <body>
 <h1>Customer List</h1>
 
-<!-- Debugging: Print out the customers object directly -->
-<c:if test="${not empty customers}">
-    <h2>Customers data passed:</h2>
-    <pre>${customers}</pre> <!-- Directly display the customer object -->
-</c:if>
+<%
+    List<Customer> customerList = (List<Customer>) request.getAttribute("customers");
+    if (customerList != null && !customerList.isEmpty()) {
+%>
+<h2>Customers:</h2>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Address</th>
+        <th>Actions</th> <!-- Added column for actions -->
+    </tr>
+    <%
+        for (Customer customer : customerList) {
+    %>
+    <tr>
+        <td><%= customer.getCustomerID() %></td>
+        <td><%= customer.getName() %></td>
+        <td><%= customer.getEmail() %></td>
+        <td><%= customer.getPhoneNumber() %></td>
+        <td><%= customer.getAddress() %></td>
+        <td>
+            <a href="customer?action=view&id=<%= customer.getCustomerID() %>">View</a>
+            <a href="customer?action=edit&id=<%= customer.getCustomerID() %>">Edit</a>
+            <a href="customer?action=delete&id=<%= customer.getCustomerID() %>">Delete</a>
+        </td>
+    </tr>
+    <%
+        }
+    %>
+</table>
+<%
+} else {
+%>
+<p>No customers found.</p>
+<%
+    }
+%>
 
 <a href="customer?action=add">Add New Customer</a>
 </body>
