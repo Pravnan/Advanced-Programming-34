@@ -67,7 +67,7 @@ public class DriverRepoImple implements DriverRepository {
                         rs.getInt("FailedAttempts"),
                         rs.getBoolean("IsVerified"),
                         rs.getBoolean("IsLocked"),
-                        rs.getTimestamp("IsVerified")
+                        rs.getTimestamp("LastLogin")
                 );
             }
         } catch (SQLException e) {
@@ -215,14 +215,13 @@ public class DriverRepoImple implements DriverRepository {
 
     @Override
     public void updateLastLogin(int driverId) {
-        String query = "UPDATE public.\"Driver\" SET \"LastLogin\" = ? WHERE \"DriverID\" = ?";
+        String query = "UPDATE public.\"Driver\" SET \"LastLogin\" = CURRENT_TIMESTAMP WHERE \"DriverID\" = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             // Set the current timestamp for last login
-            stmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
-            stmt.setInt(2, driverId);
+            stmt.setInt(1, driverId);
 
             // Execute the update query
             int affectedRows = stmt.executeUpdate();
@@ -255,7 +254,7 @@ public class DriverRepoImple implements DriverRepository {
                         rs.getInt("FailedAttempts"),
                         rs.getBoolean("IsVerified"),
                         rs.getBoolean("IsLocked"),
-                        rs.getTimestamp("IsVerified")
+                        rs.getTimestamp("LastLogin")
                 );
             }
         } catch (SQLException e) {
@@ -308,22 +307,5 @@ public class DriverRepoImple implements DriverRepository {
         }
     }
 
-    private void executeUpdate(String query, Object... params) {
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            for (int i = 0; i < params.length; i++) {
-                if (params[i] instanceof Integer) {
-                    stmt.setInt(i + 1, (Integer) params[i]);
-                } else if (params[i] instanceof Boolean) {
-                    stmt.setBoolean(i + 1, (Boolean) params[i]);
-                } else if (params[i] instanceof Timestamp) {
-                    stmt.setTimestamp(i + 1, (Timestamp) params[i]);
-                }
-            }
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 }

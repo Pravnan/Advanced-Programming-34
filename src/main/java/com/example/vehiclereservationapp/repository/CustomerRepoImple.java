@@ -20,9 +20,8 @@ public class CustomerRepoImple implements CustomerRepository {
 
     @Override
     public void save(Customer customer) {
-        String query = "INSERT INTO public.\"Customer\" (\"Name\", \"Email\", \"Address\", \"NIC\", \"PhoneNumber\", \"Username\", \"PasswordHash\", \"Role\", \"IsVerified\", \"FailedAttempts\", \"IsLocked\") " +
+        String query = "INSERT INTO public.\"Customer\" (\"Name\", \"Email\", \"Address\", \"NIC\", \"PhoneNumber\", \"username\", \"passwordhash\", \"role\", \"isverified\", \"failedattempts\", \"islocked\") " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -39,6 +38,7 @@ public class CustomerRepoImple implements CustomerRepository {
             stmt.setBoolean(11, customer.isAccountLocked());
 
             stmt.executeUpdate();
+            System.out.println(stmt);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -82,7 +82,7 @@ public class CustomerRepoImple implements CustomerRepository {
 
     @Override
     public void update(Customer customer) {
-        String query = "UPDATE public.\"Customer\" SET \"Name\" = ?, \"Email\" = ?, \"Address\" = ?, \"NIC\" = ?, \"PhoneNumber\" = ?, \"Username\" = ?, \"Role\" = ?, \"IsVerified\" = ?, \"FailedAttempts\" = ?, \"IsLocked\" = ? " +
+        String query = "UPDATE public.\"Customer\" SET \"Name\" = ?, \"Email\" = ?, \"Address\" = ?, \"NIC\" = ?, \"PhoneNumber\" = ?, \"username\" = ?, \"role\" = ?, \"isverified\" = ?, \"failedattempts\" = ?, \"islocked\" = ? " +
                 "WHERE \"CustomerID\" = ?";
 
         try (Connection conn = dataSource.getConnection();
@@ -122,7 +122,7 @@ public class CustomerRepoImple implements CustomerRepository {
 
     @Override
     public Customer findByUsername(String username) {
-        String query = "SELECT * FROM public.\"Customer\" WHERE \"Username\" = ?";
+        String query = "SELECT * FROM public.\"Customer\" WHERE \"username\" = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -140,7 +140,7 @@ public class CustomerRepoImple implements CustomerRepository {
 
     @Override
     public void resetFailedAttempts(String username) {
-        String query = "UPDATE public.\"Customer\" SET \"FailedAttempts\" = 0 WHERE \"Username\" = ?";
+        String query = "UPDATE public.\"Customer\" SET \"failedattempts\" = 0 WHERE \"username\" = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -154,7 +154,7 @@ public class CustomerRepoImple implements CustomerRepository {
 
     @Override
     public void updateVerifiedStatus(String username, boolean isVerified) {
-        String query = "UPDATE public.\"Customer\" SET \"IsVerified\" = ? WHERE \"Username\" = ?";
+        String query = "UPDATE public.\"Customer\" SET \"isverified\" = ? WHERE \"username\" = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -169,7 +169,7 @@ public class CustomerRepoImple implements CustomerRepository {
 
     @Override
     public void updateFailedAttempts(int customerId, int failedAttempts) {
-        String query = "UPDATE public.\"Customer\" SET \"FailedAttempts\" = ? WHERE \"CustomerID\" = ?";
+        String query = "UPDATE public.\"Customer\" SET \"failedattempts\" = ? WHERE \"CustomerID\" = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -184,7 +184,7 @@ public class CustomerRepoImple implements CustomerRepository {
 
     @Override
     public void lockAccount(int customerId) {
-        String query = "UPDATE public.\"Customer\" SET \"IsLocked\" = true WHERE \"CustomerID\" = ?";
+        String query = "UPDATE public.\"Customer\" SET \"islocked\" = true WHERE \"CustomerID\" = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -198,7 +198,7 @@ public class CustomerRepoImple implements CustomerRepository {
 
     @Override
     public void unlockAccount(int customerId) {
-        String query = "UPDATE public.\"Customer\" SET \"IsLocked\" = false WHERE \"CustomerID\" = ?";
+        String query = "UPDATE public.\"Customer\" SET \"islocked\" = false WHERE \"CustomerID\" = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -212,12 +212,22 @@ public class CustomerRepoImple implements CustomerRepository {
 
     @Override
     public void setEmailVerified(int customerId, boolean isVerified) {
+        String query = "UPDATE public.\"Customer\" SET \"isverified\" = ? WHERE \"CustomerID\" = ?";
 
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setBoolean(1, isVerified);  // Set the new verification status (TRUE or FALSE)
+            stmt.setInt(2, customerId);  // Use the customerId to find the specific customer
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void updateLastLogin(int customerId) {
-        String query = "UPDATE public.\"Customer\" SET \"LastLogin\" = CURRENT_TIMESTAMP WHERE \"CustomerID\" = ?";
+        String query = "UPDATE public.\"Customer\" SET \"lastlogin\" = CURRENT_TIMESTAMP WHERE \"CustomerID\" = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -238,13 +248,13 @@ public class CustomerRepoImple implements CustomerRepository {
                 rs.getString("NIC"),
                 rs.getString("PhoneNumber"),
                 rs.getTimestamp("CreatedAt"),
-                rs.getString("Username"),
-                rs.getString("PasswordHash"),
-                rs.getString("Role"),
-                rs.getBoolean("IsVerified"),
-                rs.getInt("FailedAttempts"),
-                rs.getBoolean("IsLocked"),
-                rs.getTimestamp("LastLogin")
+                rs.getString("username"),
+                rs.getString("passwordhash"),
+                rs.getString("role"),
+                rs.getBoolean("isverified"),
+                rs.getInt("failedattempts"),
+                rs.getBoolean("islocked"),
+                rs.getTimestamp("lastlogin")
         );
     }
 

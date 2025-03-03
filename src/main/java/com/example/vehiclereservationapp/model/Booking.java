@@ -4,64 +4,42 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public class Booking {
+
     private int bookingID;
     private int customerID;
-    private String orderNumber;
+    private String destination;
+    private Timestamp bookingDate;  // Date when the booking was created
+    private Timestamp requestedTime;  // Time customer wants the booking
+    private BigDecimal totalAmount;
+    private String paymentStatus;
+    private String pickupLocation;
+    private String dropoffLocation;
 
-    public String getDropoffLocation() {
-        return dropoffLocation;
-    }
+    // Default constructor
+    public Booking() {}
 
-    public void setDropoffLocation(String dropoffLocation) {
-        this.dropoffLocation = dropoffLocation;
-    }
-
-    public String getPickupLocation() {
-        return pickupLocation;
-    }
-
-    public void setPickupLocation(String pickupLocation) {
-        this.pickupLocation = pickupLocation;
-    }
-
-    public String getPaymentStatus() {
-        return paymentStatus;
-    }
-
-    public void setPaymentStatus(String paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
-
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public Timestamp getBookingDate() {
-        return bookingDate;
-    }
-
-    public void setBookingDate(Timestamp bookingDate) {
-        this.bookingDate = bookingDate;
-    }
-
-    public String getDestination() {
-        return destination;
-    }
-
-    public void setDestination(String destination) {
+    // Constructor with essential fields
+    public Booking(int customerID, String destination, Timestamp bookingDate,
+                   BigDecimal totalAmount, String paymentStatus, String pickupLocation, String dropoffLocation, Timestamp requestedTime) {
+        this.customerID = customerID;
         this.destination = destination;
+        this.bookingDate = bookingDate;
+        this.totalAmount = totalAmount;
+        this.paymentStatus = paymentStatus;
+        this.pickupLocation = pickupLocation;
+        this.dropoffLocation = dropoffLocation;
+        this.requestedTime = requestedTime;
     }
 
-    public String getOrderNumber() {
-        return orderNumber;
+
+
+    // Getter and Setter Methods
+    public int getBookingID() {
+        return bookingID;
     }
 
-    public void setOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
+    public void setBookingID(int bookingID) {
+        this.bookingID = bookingID;
     }
 
     public int getCustomerID() {
@@ -72,18 +50,59 @@ public class Booking {
         this.customerID = customerID;
     }
 
-    public int getBookingID() {
-        return bookingID;
+    public String getDestination() {
+        return destination;
     }
 
-    public void setBookingID(int bookingID) {
-        this.bookingID = bookingID;
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
-    private String destination;
-    private Timestamp bookingDate;
-    private BigDecimal totalAmount;
-    private String paymentStatus;
-    private String pickupLocation;
-    private String dropoffLocation;
+    public Timestamp getBookingDate() {
+        return bookingDate;
+    }
+
+    public void setBookingDate(Timestamp bookingDate) {
+        this.bookingDate = bookingDate;
+    }
+
+    public Timestamp getRequestedTime() {
+        return requestedTime;
+    }
+
+    public void setRequestedTime(Timestamp requestedTime) {
+        this.requestedTime = requestedTime;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public String getPickupLocation() {
+        return pickupLocation;
+    }
+
+    public void setPickupLocation(String pickupLocation) {
+        this.pickupLocation = pickupLocation;
+    }
+
+    public String getDropoffLocation() {
+        return dropoffLocation;
+    }
+
+    public void setDropoffLocation(String dropoffLocation) {
+        this.dropoffLocation = dropoffLocation;
+    }
 }

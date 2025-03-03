@@ -113,7 +113,7 @@ public class DriverController extends HttpServlet {
                 request.getParameter("PasswordHash"),
                 "DRIVER",
                 0, // Failed login attempts
-                false, // Email verification status
+                true, // Email verification status
                 false, // Account lock status
                 null // Last login timestamp
         );

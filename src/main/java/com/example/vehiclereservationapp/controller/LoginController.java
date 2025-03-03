@@ -31,9 +31,8 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Forward the request to the login page
-        request.getRequestDispatcher("views/login.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/login.jsp").forward(request, response);
     }
-
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -43,18 +42,18 @@ public class LoginController extends HttpServlet {
 
         Driver driver = driverService.getDriverByUsername(username);
         Admin admin = adminService.getAdminByUsername(username);
-        //Customer customer = customerService.findByUsername(username);
+        Customer customer = customerService.getCustomerByUsername(username);
 
         // Check if the user is a Driver
         if (driver != null && driverService.authenticateDriver(driver.getUsername(), password)) {
             if (driver.getFailedAttempts() >= 3) {
                 request.setAttribute("errorMessage", "Account locked due to multiple failed attempts.");
-                request.getRequestDispatcher("views/login.jsp").forward(request, response);
+                request.getRequestDispatcher("/views/login.jsp").forward(request, response);
                 return;
             }
             if (!driver.isVerified()) {
                 request.setAttribute("errorMessage", "Please verify your email address.");
-                request.getRequestDispatcher("views/login.jsp").forward(request, response);
+                request.getRequestDispatcher("/views/login.jsp").forward(request, response);
                 return;
             }
             HttpSession session = request.getSession();
@@ -62,7 +61,7 @@ public class LoginController extends HttpServlet {
             if ("on".equals(rememberMe)) {
                 session.setMaxInactiveInterval(60 * 60 * 24 * 7); // Keep the session alive for 7 days if 'Remember Me' is checked
             }
-            response.sendRedirect("views/driverDashboard.jsp"); // Redirect to the Driver dashboard
+            response.sendRedirect(request.getContextPath() + "/driver/dashboard"); // Redirect to the Driver dashboard
 
         }
         // Check if the user is an Admin
@@ -72,32 +71,32 @@ public class LoginController extends HttpServlet {
             if ("on".equals(rememberMe)) {
                 session.setMaxInactiveInterval(60 * 60 * 24 * 7);
             }
-            response.sendRedirect("views/adminDashboard.jsp"); // Redirect to the Admin dashboard
+            response.sendRedirect(request.getContextPath() + "/admin/dashboard"); // Redirect to the Admin dashboard
 
         }
-//        // Check if the user is a Customer
-//        else if (customer != null && customerService.validateLogin(customer, password)) {
-//            if (customer.getFailedAttempts() >= 3) {
-//                request.setAttribute("errorMessage", "Account locked due to multiple failed attempts.");
-//                request.getRequestDispatcher("views/login.jsp").forward(request, response);
-//                return;
-//            }
-//            if (!customer.isVerified()) {
-//                request.setAttribute("errorMessage", "Please verify your email address.");
-//                request.getRequestDispatcher("views/login.jsp").forward(request, response);
-//                return;
-//            }
-//            HttpSession session = request.getSession();
-//            session.setAttribute("loggedInCustomer", customer);
-//            if ("on".equals(rememberMe)) {
-//                session.setMaxInactiveInterval(60 * 60 * 24 * 7);
-//            }
-//            response.sendRedirect("/customer/dashboard"); // Redirect to the Customer dashboard
-//        }
+        // Check if the user is a Customer
+        else if (customer != null && customerService.authenticateCustomer(customer.getUsername(), password)) {
+            if (customer.getFailedAttempts() >= 3) {
+                request.setAttribute("errorMessage", "Account locked due to multiple failed attempts.");
+                request.getRequestDispatcher("/views/login.jsp").forward(request, response);
+                return;
+            }
+            if (!customer.isVerified()) {
+                request.setAttribute("errorMessage", "Please verify your email address.");
+                request.getRequestDispatcher("/views/login.jsp").forward(request, response);
+                return;
+            }
+            HttpSession session = request.getSession();
+            session.setAttribute("loggedInCustomer", customer);
+            if ("on".equals(rememberMe)) {
+                session.setMaxInactiveInterval(60 * 60 * 24 * 7);
+            }
+            response.sendRedirect(request.getContextPath() + "/customer/dashboard"); // Redirect to the Customer dashboard
+        }
         else {
             // If login fails, redirect to login page with error
             request.setAttribute("errorMessage", "Invalid username or password.");
-            request.getRequestDispatcher("views/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/views/login.jsp").forward(request, response);
         }
     }
 }

@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
 
 @WebServlet("/customer")
@@ -131,10 +132,32 @@ public class CustomerController extends HttpServlet {
     // ✅ Add customer
     private void handleAddCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            Customer customer = createCustomerFromRequest(request);
+            String name = request.getParameter("name");
+            String email = request.getParameter("email");
+            String address = request.getParameter("address");
+            String nic = request.getParameter("nic");
+            String phoneNumber = request.getParameter("phoneNumber");
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+            String confirmPassword = request.getParameter("confirmPassword");
+
+            if (!password.equals(confirmPassword)) {
+                System.out.println("[ERROR] Passwords do not match.");
+                response.sendRedirect("customer?action=add&error=password_mismatch");
+                return;
+            }
+
+            // Create new Customer object
+            Customer customer = new Customer(
+                    0, name, email, address, nic, phoneNumber,
+                    new Timestamp(System.currentTimeMillis()),
+                    username, password, "CUSTOMER", true, 0, false, null
+            );
+
             customerService.addCustomer(customer);
-            System.out.println("[INFO] Customer added successfully: " + customer.getUsername());
-            response.sendRedirect("customer?action=list");
+            System.out.println("[INFO] Customer registered successfully: " + username);
+
+            response.sendRedirect("index.jsp?message=registered");
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("customer?action=add&error=true");

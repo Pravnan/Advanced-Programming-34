@@ -18,7 +18,6 @@
         </ul>
     </nav>
 </header>
-
 <main>
     <section>
         <h2>Driver Information</h2>

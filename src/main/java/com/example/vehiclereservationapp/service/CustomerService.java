@@ -19,6 +19,8 @@ public class CustomerService {
 
     // CRUD
     public void addCustomer(Customer customer) {
+        String hashedPassword = hashPassword(customer.getPasswordHash());
+        customer.setPasswordHash(hashedPassword);
         customerRepository.save(customer);
     }
 
