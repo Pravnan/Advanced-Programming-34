@@ -6,8 +6,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
 import java.io.IOException;
+import com.example.vehiclereservationapp.model.Driver;
 
 @WebServlet("/driver/dashboard")
 public class DriverDashboardController extends HttpServlet {

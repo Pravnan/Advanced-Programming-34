@@ -1,67 +1,154 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Login</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 50px;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 40px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
             text-align: center;
         }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
         form {
-            display: inline-block;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
             text-align: left;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
         }
-        input, button {
-            display: block;
-            width: 100%;
-            margin: 10px 0;
-            padding: 10px;
+
+        input[type="text"],
+        input[type="password"] {
+            padding: 12px 15px;
+            margin-bottom: 20px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
-        button {
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            outline: none;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        button[type="submit"] {
+            padding: 14px 20px;
             background-color: #007bff;
-            color: white;
+            color: #fff;
             border: none;
+            font-size: 16px;
             cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
-        button:hover {
+
+        button[type="submit"]:hover {
             background-color: #0056b3;
         }
+
         .error-message {
-            color: red;
+            color: #ff3333;
             font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        p a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        p a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+
+            button[type="submit"] {
+                font-size: 14px;
+                padding: 12px 16px;
+            }
         }
     </style>
 </head>
 <body>
 
-<h2>Login</h2>
+    <div class="login-container">
 
-<c:if test="${not empty errorMessage}">
-    <p class="error-message">${errorMessage}</p>
-</c:if>
+        <h2>Login</h2>
 
-<form action="login" method="post">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required>
+        <c:if test="${not empty errorMessage}">
+            <p class="error-message">${errorMessage}</p>
+        </c:if>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
+        <form action="login" method="post">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
 
-    <label for="rememberMe">
-        <input type="checkbox" id="rememberMe" name="rememberMe"> Remember Me
-    </label>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
 
-    <button type="submit">Login</button>
-</form>
+            <div class="checkbox-container">
+                <input type="checkbox" id="rememberMe" name="rememberMe">
+                <label for="rememberMe">Remember Me</label>
+            </div>
 
-<p>Don't have an account? <a href="customer?action=add">Register here</a></p>
+            <button type="submit">Login</button>
+        </form>
+
+        <p>Don't have an account? <a href="customer?action=add">Register here</a></p>
+
+    </div>
 
 </body>
 </html>

@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class BookingController extends HttpServlet {
                     request.setAttribute("bookings", customerBookings);
                     request.getRequestDispatcher("/views/booking-list.jsp").forward(request, response);
                 } else {
-                    response.sendRedirect("login");  // Redirect to login if no user is logged in
+                    response.sendRedirect("HERE/login");  // Redirect to login if no user is logged in
                 }
                 break;
 
@@ -64,38 +65,21 @@ public class BookingController extends HttpServlet {
                 request.getRequestDispatcher("/views/booking-add.jsp").forward(request, response);
                 break;
 
+            case "bAedit":
+                System.out.println("bAedit case triggered!");
+
+                if (loggedInAdmin != null) {
+                    request.getRequestDispatcher("/views/booking-admin-edit.jsp").forward(request, response);
+                }
+                break;
             default:
                 response.sendRedirect("booking?action=list");
-        }
-    }
-
-    private void handleEditBooking(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try{
-            System.out.println(request.getParameter("id"));
-            int bookingID = Integer.parseInt(request.getParameter("id"));
-            Booking booking = bookingService.getBookingByID(bookingID);
-            if (booking != null) {
-                request.setAttribute("booking", booking);
-                request.getRequestDispatcher("/views/booking-edit.jsp").forward(request, response);
-            }else{
-                System.out.println("Redirected through here");
-                response.sendRedirect("booking?action=list");
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("[ERROR] Invalid booking ID format.");
-            response.sendRedirect("booking?action=list");
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-
-        // Debugging: Print all request parameters
-        System.out.println("Received POST request:");
-        request.getParameterMap().forEach((key, value) ->
-                System.out.println(key + ": " + String.join(", ", value))
-        );
 
         switch (action != null ? action : "list") {
             case "add":
@@ -118,10 +102,14 @@ public class BookingController extends HttpServlet {
             case "delete":
                 handleDeleteBooking(request, response);
                 break;
+            case "bAedit":
+                handlingBookingadminupdate(request, response);
             default:
                 response.sendRedirect("booking?action=list");
         }
     }
+
+    //CRUD
 
     private void handleDeleteBooking(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try{
@@ -165,6 +153,51 @@ public class BookingController extends HttpServlet {
         }
     }
 
+    private void handleEditBooking(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try{
+            System.out.println(request.getParameter("id"));
+            int bookingID = Integer.parseInt(request.getParameter("id"));
+            Booking booking = bookingService.getBookingByID(bookingID);
+            if (booking != null) {
+                request.setAttribute("booking", booking);
+                request.getRequestDispatcher("/views/booking-edit.jsp").forward(request, response);
+            }else{
+                System.out.println("Redirected through here");
+                response.sendRedirect("booking?action=list");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("[ERROR] Invalid booking ID format.");
+            response.sendRedirect("booking?action=list");
+        }
+    }
+
+
+    //admin update the booking
+    private void handlingBookingadminupdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            HttpSession session = request.getSession();
+            Admin loggedInAdmin = (Admin) session.getAttribute("loggedInAdmin");
+
+            if (loggedInAdmin != null) {
+                System.out.println("This is FROM handlingBookingadminupdate");
+                response.sendRedirect("login");
+                return;
+            }
+            Booking updatedBooking = createAdminBookingFromRequest(request);
+            bookingService.updateBooking(updatedBooking);
+
+            System.out.println("[INFO] Admin updated booking ID: " + updatedBooking.getBookingID());
+            response.sendRedirect("booking?action=list");
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("booking?action=list&error=true");
+        }
+    }
+
+
+
+    //Booking Form helper for cutomer
     private Booking createCustomerBookingFromRequest(HttpServletRequest request) {
         String customerID = request.getParameter("customerID");
         String destination = request.getParameter("destination");
@@ -203,5 +236,38 @@ public class BookingController extends HttpServlet {
         );
     }
 
+    //Booking Form helper for admin
+    private Booking createAdminBookingFromRequest(HttpServletRequest request) {
+        String totalAmountStr = request.getParameter("totalAmount");
+        if (totalAmountStr == null || totalAmountStr.isEmpty()) {
+            throw new IllegalArgumentException("Total amount is required for admin update.");
+        }
+        // Convert the totalAmount to BigDecimal
+        BigDecimal totalAmount;
+        try {
+            totalAmount = new BigDecimal(totalAmountStr);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid total amount format: " + totalAmountStr);
+        }
+        // Set paymentStatus to "PAID"
+        String paymentStatus = "PAID";
+
+        // Assuming the booking ID comes from the request (if it's for an update)
+        int bookingID = Integer.parseInt(request.getParameter("id"));
+
+        // Retrieve the current booking from the service (this is where the database values come in)
+        Booking booking = bookingService.getBookingByID(bookingID);
+
+        if (booking == null) {
+            throw new IllegalArgumentException("Booking not found with ID: " + bookingID);
+        }
+
+        // Now update the booking details
+        booking.setTotalAmount(totalAmount);
+        booking.setPaymentStatus(paymentStatus);
+
+        // Return the updated booking object
+        return booking;
+    }
 
 }

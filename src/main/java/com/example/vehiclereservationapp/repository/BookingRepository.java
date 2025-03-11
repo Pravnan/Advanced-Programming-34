@@ -1,6 +1,8 @@
 package com.example.vehiclereservationapp.repository;
 
 import com.example.vehiclereservationapp.model.Booking;
+import com.example.vehiclereservationapp.model.BookingCar;
+
 
 import java.util.List;
 

@@ -23,7 +23,8 @@
 <ul>
     <li><a href="../customer?action=list">Manage Customers</a></li>
     <li><a href="../driver?action=list">Manage Drivers</a></li>
-    <li><a href="../admin/manage-reservations">Manage Reservations</a></li>
+    <li><a href="../booking?action=list">Update Bookings</a></li>
+    <li><a href="../booking?action=list">Manage Vehicles</a></li>
     <li><a href="../admin/reports">View Reports</a></li>
     <li><a href="admin?action=edit&id=<%= admin.getAdminID() %>">Update Profile</a></li>
     <li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>

@@ -1,7 +1,7 @@
 package com.example.vehiclereservationapp.repository;
 
-import com.example.vehiclereservationapp.config.DBConfig;
 import com.example.vehiclereservationapp.model.Booking;
+import com.example.vehiclereservationapp.config.DBConfig;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import java.sql.*;
