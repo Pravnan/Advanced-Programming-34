@@ -5,6 +5,23 @@ import java.sql.Timestamp;
 
 public class Payment {
     private int paymentID;
+    private int bookingID;
+    private Timestamp paymentDate;
+    private BigDecimal amount;
+    private String paymentMethod;
+    private String paymentReference;
+
+    public Payment() {
+    }
+
+    public Payment(int paymentID, int bookingID, Timestamp paymentDate, BigDecimal amount, String paymentMethod, String paymentReference) {
+        this.paymentID = paymentID;
+        this.bookingID = bookingID;
+        this.paymentDate = paymentDate;
+        this.amount = amount;
+        this.paymentMethod = paymentMethod;
+        this.paymentReference = paymentReference;
+    }
 
     public int getPaymentID() {
         return paymentID;
@@ -53,10 +70,4 @@ public class Payment {
     public void setPaymentReference(String paymentReference) {
         this.paymentReference = paymentReference;
     }
-
-    private int bookingID;
-    private Timestamp paymentDate;
-    private BigDecimal amount;
-    private String paymentMethod;
-    private String paymentReference;
 }

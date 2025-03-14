@@ -1,9 +1,9 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Add Driver</title>
+    <title>Add Car</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,7 +13,7 @@
             padding: 0;
         }
 
-        h1 {
+        h2 {
             text-align: center;
             margin-top: 30px;
             color: #5a5a5a;
@@ -42,7 +42,7 @@
 
         input[type="text"],
         input[type="number"],
-        select {
+        input[type="date"] {
             padding: 12px 15px;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -54,7 +54,7 @@
 
         input[type="text"]:focus,
         input[type="number"]:focus,
-        select:focus {
+        input[type="date"]:focus {
             border-color: #4CAF50;
             box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
             outline: none;
@@ -98,7 +98,7 @@
 
             input[type="text"],
             input[type="number"],
-            select {
+            input[type="date"] {
                 font-size: 14px;
             }
         }
@@ -106,57 +106,51 @@
 </head>
 <body>
 
-    <h1>Add Driver</h1>
+    <h2>Add a New Car</h2>
 
     <div class="container">
-        <form action="driver?action=add" method="post">
+        <form action="car" method="post">
+            <input type="hidden" name="action" value="add">
+
             <div>
-                <label for="Name">Name:</label>
-                <input type="text" id="Name" name="Name" required>
+                <label>Registration Number:</label>
+                <input type="text" name="registrationNumber" required>
             </div>
 
             <div>
-                <label for="LicenseNumber">License Number:</label>
-                <input type="text" id="LicenseNumber" name="LicenseNumber" required>
+                <label>Make:</label>
+                <input type="text" name="make" required>
             </div>
 
             <div>
-                <label for="PhoneNumber">Phone Number:</label>
-                <input type="text" id="PhoneNumber" name="PhoneNumber" required>
+                <label>Model:</label>
+                <input type="text" name="model" required>
             </div>
 
             <div>
-                <label for="AssignedCarID">Assigned Car ID:</label>
-                <input type="number" id="AssignedCarID" name="AssignedCarID">
+                <label>Year:</label>
+                <input type="number" name="year" required>
             </div>
 
             <div>
-                <label for="Status">Status:</label>
-                <select id="Status" name="Status">
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
-                </select>
+                <label>Availability Status:</label>
+                <input type="text" name="availabilityStatus" required>
             </div>
 
             <div>
-                <label for="Username">Username:</label>
-                <input type="text" id="Username" name="Username">
+                <label>Last Service Date (YYYY-MM-DD):</label>
+                <input type="date" name="lastServiceDate" required>
             </div>
 
             <div>
-                <label for="PasswordHash">Password:</label>
-                <input type="text" id="PasswordHash" name="PasswordHash">
+                <label>Current Mileage:</label>
+                <input type="number" name="currentMileage" required>
             </div>
 
-            <div>
-                <label for="Role">Role:</label>
-                <input type="text" id="Role" name="Role">
-            </div>
-
-            <button type="submit">Add Driver</button>
+            <button type="submit">Add Car</button>
         </form>
 
-        <a class="back-button" href="driver?action=list">Back to List</a>
+        <a class="back-button" href="car?action=list">Back to Car List</a>
     </div>
 
 </body>

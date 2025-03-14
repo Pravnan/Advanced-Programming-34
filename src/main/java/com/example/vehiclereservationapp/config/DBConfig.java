@@ -7,6 +7,7 @@ public class DBConfig {
     private static final String DB_USER = "my-user";  // Replace with your username
     private static final String DB_PASSWORD = "my-password";  // Replace with your password
 
+
     // Method to return a PGSimpleDataSource instance
     public static PGSimpleDataSource getDataSource() {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();

@@ -13,8 +13,7 @@ public interface AdminRepository {
 
 
 
-
-    Admin findByUsername(String username);
+    // Will be implemented in Future
     void resetFailedAttempts(String username);
     void updateVerifiedStatus(String username, boolean isVerified);
 

@@ -54,6 +54,17 @@ public class AuthFilter implements Filter {
 
             System.out.println("[AuthFilter] User Role - Admin: " + isAdmin + ", Driver: " + isDriver + ", Customer: " + isCustomer);
 
+
+            // 🚨 **Restrict Car Access to Admins Only (Except Listing)**
+            if (path.contains("/car")) {
+                if (!isAdmin && (action == null || !"list".equals(action))) {
+                    System.out.println("[AuthFilter] Access denied: Only Admins can manage cars.");
+                    httpResponse.sendRedirect(httpRequest.getContextPath() + "/unauthorized.jsp");
+                    return;
+                }
+            }
+
+
             // 🚨 **Block Customers from Listing Other Customers**
             if (isCustomer && path.contains("/customer") && "list".equals(action)) {
                 System.out.println("[AuthFilter] Access denied: Customers cannot list other customers.");
@@ -73,6 +84,15 @@ public class AuthFilter implements Filter {
                 System.out.println("[AuthFilter] Customer tried to access driver section: " + path);
                 httpResponse.sendRedirect(httpRequest.getContextPath() + "/customer/dashboard");
                 return;
+            }
+
+            if (isAdmin && path.contains("/booking") && action != null) {
+                // Only allow specific actions for Admins
+                if ("bAedit".equals(action) || "bAview".equals(action) || "bAdelete".equals(action)) {
+                    System.out.println("[AuthFilter] Admin is allowed to perform action: " + action);
+                    chain.doFilter(request, response);
+                    return;
+                }
             }
         }
 

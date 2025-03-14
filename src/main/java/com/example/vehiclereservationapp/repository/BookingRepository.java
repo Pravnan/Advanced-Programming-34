@@ -16,6 +16,8 @@ public interface BookingRepository {
     void update(Booking booking); // Update
     void delete(int bookingID); //
 
+    //admin update booking
+    void updateBooking(Booking booking);
 
     List<Booking> getBookingslistByCustomerID(int customerID);
     List<Booking> getUnassignedBookings();

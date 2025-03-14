@@ -1,9 +1,13 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="com.example.vehiclereservationapp.model.Car" %>
+<%
+    Car car = (Car) request.getAttribute("car");
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Driver Details</title>
+    <title>View Car</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,7 +17,7 @@
             padding: 0;
         }
 
-        h1 {
+        h2 {
             text-align: center;
             margin-top: 30px;
             color: #5a5a5a;
@@ -45,9 +49,14 @@
             font-weight: bold;
         }
 
-        .back-button {
-            display: inline-block;
+        .actions {
+            display: flex;
+            gap: 10px;
             margin-top: 20px;
+        }
+
+        .actions a {
+            display: inline-block;
             padding: 12px 24px;
             background-color: #4CAF50;
             color: #fff;
@@ -57,7 +66,7 @@
             transition: background-color 0.3s ease;
         }
 
-        .back-button:hover {
+        .actions a:hover {
             background-color: #45a049;
         }
 
@@ -69,24 +78,39 @@
             .details p {
                 font-size: 14px;
             }
+
+            .actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .actions a {
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
 
-    <h1>Driver Details</h1>
+    <h2>Car Details</h2>
 
     <div class="container">
         <div class="details">
-            <p><strong>ID:</strong> ${driver.driverID}</p>
-            <p><strong>Name:</strong> ${driver.name}</p>
-            <p><strong>License Number:</strong> ${driver.licenseNumber}</p>
-            <p><strong>Phone Number:</strong> ${driver.phoneNumber}</p>
-            <p><strong>Assigned Car ID:</strong> ${driver.assignedCarID}</p>
-            <p><strong>Status:</strong> ${driver.status}</p>
+            <p><strong>ID:</strong> <%= car.getCarID() %></p>
+            <p><strong>Registration Number:</strong> <%= car.getRegistrationNumber() %></p>
+            <p><strong>Make:</strong> <%= car.getMake() %></p>
+            <p><strong>Model:</strong> <%= car.getModel() %></p>
+            <p><strong>Year:</strong> <%= car.getYear() %></p>
+            <p><strong>Availability Status:</strong> <%= car.getAvailabilityStatus() %></p>
+            <p><strong>Last Service Date:</strong> <%= car.getLastServiceDate() %></p>
+            <p><strong>Current Mileage:</strong> <%= car.getCurrentMileage() %></p>
         </div>
 
-        <a class="back-button" href="driver?action=list">Back to List</a>
+        <div class="actions">
+            <a href="car?action=edit&id=<%= car.getCarID() %>">Edit</a>
+            <a href="car?action=list">Back to Car List</a>
+        </div>
     </div>
 
 </body>

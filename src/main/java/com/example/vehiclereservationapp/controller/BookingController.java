@@ -49,7 +49,7 @@ public class BookingController extends HttpServlet {
                     request.setAttribute("bookings", customerBookings);
                     request.getRequestDispatcher("/views/booking-list.jsp").forward(request, response);
                 } else {
-                    response.sendRedirect("HERE/login");  // Redirect to login if no user is logged in
+                    response.sendRedirect("views/login");  // Redirect to login if no user is logged in
                 }
                 break;
 
@@ -66,14 +66,27 @@ public class BookingController extends HttpServlet {
                 break;
 
             case "bAedit":
-                System.out.println("bAedit case triggered!");
-
-                if (loggedInAdmin != null) {
-                    request.getRequestDispatcher("/views/booking-admin-edit.jsp").forward(request, response);
-                }
+                handleAdminEditBooking(request, response);
                 break;
+
             default:
                 response.sendRedirect("booking?action=list");
+        }
+    }
+
+    private void handleAdminEditBooking(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try{
+            int bookingID = Integer.parseInt(request.getParameter("id"));
+            Booking booking = bookingService.getBookingByID(bookingID);
+            if (booking != null) {
+                request.setAttribute("booking", booking);
+                request.getRequestDispatcher("/views/booking-admin-edit.jsp").forward(request, response);
+            }else{
+                response.sendRedirect("booking?action=list");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("[ERROR] Invalid booking ID format.");
+            response.sendRedirect("booking?action=list");
         }
     }
 
@@ -102,8 +115,10 @@ public class BookingController extends HttpServlet {
             case "delete":
                 handleDeleteBooking(request, response);
                 break;
-            case "bAedit":
+            case "bupdate":
                 handlingBookingadminupdate(request, response);
+                break;
+
             default:
                 response.sendRedirect("booking?action=list");
         }
@@ -175,25 +190,20 @@ public class BookingController extends HttpServlet {
     //admin update the booking
     private void handlingBookingadminupdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            HttpSession session = request.getSession();
-            Admin loggedInAdmin = (Admin) session.getAttribute("loggedInAdmin");
-
-            if (loggedInAdmin != null) {
-                System.out.println("This is FROM handlingBookingadminupdate");
-                response.sendRedirect("login");
-                return;
-            }
-            Booking updatedBooking = createAdminBookingFromRequest(request);
-            bookingService.updateBooking(updatedBooking);
-
-            System.out.println("[INFO] Admin updated booking ID: " + updatedBooking.getBookingID());
+            int id = Integer.parseInt(request.getParameter("id"));
+            int customerID = Integer.parseInt(request.getParameter("customerID"));
+            System.out.println(customerID);
+            Booking booking = createAdminBookingFromRequest(request);
+            booking.setBookingID(id);
+            System.out.println(booking.getPickupLocation());
+            bookingService.updateAdminBooking(booking);
             response.sendRedirect("booking?action=list");
-
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("booking?action=list&error=true");
         }
     }
+
+
 
 
 
@@ -238,36 +248,44 @@ public class BookingController extends HttpServlet {
 
     //Booking Form helper for admin
     private Booking createAdminBookingFromRequest(HttpServletRequest request) {
+        String customerID = request.getParameter("customerID");
+        String destination = request.getParameter("destination");
+        String pickupLocation = request.getParameter("pickupLocation");
+        String dropoffLocation = request.getParameter("dropoffLocation");
+        String requestedTime = request.getParameter("requestedTime");
         String totalAmountStr = request.getParameter("totalAmount");
-        if (totalAmountStr == null || totalAmountStr.isEmpty()) {
-            throw new IllegalArgumentException("Total amount is required for admin update.");
+
+        // Validate required fields
+        if (customerID == null || customerID.isEmpty() ||
+                destination == null || destination.isEmpty() ||
+                pickupLocation == null || pickupLocation.isEmpty() ||
+                dropoffLocation == null || dropoffLocation.isEmpty() ||
+                requestedTime == null || requestedTime.isEmpty()) {
+            throw new IllegalArgumentException("Missing required booking details.");
         }
-        // Convert the totalAmount to BigDecimal
-        BigDecimal totalAmount;
+
+        // Convert and validate timestamps
+        Timestamp requestedTimestamp;
+
         try {
-            totalAmount = new BigDecimal(totalAmountStr);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid total amount format: " + totalAmountStr);
-        }
-        // Set paymentStatus to "PAID"
-        String paymentStatus = "PAID";
-
-        // Assuming the booking ID comes from the request (if it's for an update)
-        int bookingID = Integer.parseInt(request.getParameter("id"));
-
-        // Retrieve the current booking from the service (this is where the database values come in)
-        Booking booking = bookingService.getBookingByID(bookingID);
-
-        if (booking == null) {
-            throw new IllegalArgumentException("Booking not found with ID: " + bookingID);
+            // Convert "2025-03-02T20:40" → "2025-03-02 20:40:00"
+            requestedTimestamp = Timestamp.valueOf(requestedTime.replace("T", " ") + ":00");
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid requested time format: " + requestedTime);
         }
 
-        // Now update the booking details
-        booking.setTotalAmount(totalAmount);
-        booking.setPaymentStatus(paymentStatus);
 
-        // Return the updated booking object
-        return booking;
+
+        return new Booking(
+                Integer.parseInt(customerID),
+                destination,
+                null,// Sent by DB diretly
+                new BigDecimal(totalAmountStr), // Initially null, can be updated later
+                "Pending",
+                pickupLocation,
+                dropoffLocation,
+                requestedTimestamp
+        );
     }
 
 }

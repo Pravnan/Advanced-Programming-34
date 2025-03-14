@@ -106,6 +106,26 @@ public class BookingRepoImpl implements BookingRepository {
     }
 
     @Override
+    public void updateBooking(Booking booking) {
+        String sql = "UPDATE \"Booking\" SET \"Destination\" = ?, \"PickupLocation\" = ?, \"DropoffLocation\" = ?, \"RequestedTime\"=? ,\"TotalAmount\" = ?  WHERE \"BookingID\" = ?";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, booking.getDestination());
+            stmt.setString(2, booking.getPickupLocation());
+            stmt.setString(3, booking.getDropoffLocation());
+            stmt.setTimestamp(4, booking.getRequestedTime());
+            stmt.setBigDecimal(5,booking.getTotalAmount());
+            stmt.setInt(6, booking.getBookingID());
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void delete(int bookingID) {
         String sql = "DELETE FROM \"Booking\" WHERE \"BookingID\" = ?";
 

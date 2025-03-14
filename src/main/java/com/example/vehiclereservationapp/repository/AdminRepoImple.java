@@ -121,11 +121,7 @@ public class AdminRepoImple implements AdminRepository {
         executeUpdate(query, new Timestamp(System.currentTimeMillis()), adminId);
     }
 
-    @Override
-    public Admin findByUsername(String username) {
-        String query = "SELECT * FROM public.\"Admin\" WHERE \"Username\" = ?";
-        return getAdmin(query, username);
-    }
+
 
     @Override
     public void resetFailedAttempts(String username) {

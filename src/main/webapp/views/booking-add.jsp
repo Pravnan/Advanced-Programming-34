@@ -190,7 +190,7 @@
     <button type="submit">Request Booking</button>
   </form>
 
-  <a href="booking?action=list">Back to List</a>
+  <a class="back-button" href="customer?action=list">Back to List</a>
 </div>
 
 </body>

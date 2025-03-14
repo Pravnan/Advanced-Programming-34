@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 public class BookingService {
 
     private final BookingRepository bookingRepository;
-
     public BookingService() {
         this.bookingRepository = new BookingRepoImpl();
     }
@@ -30,6 +29,10 @@ public class BookingService {
 
     public void updateBooking(Booking booking) {
         bookingRepository.update(booking);
+    }
+
+    public void updateAdminBooking(Booking booking) {
+        bookingRepository.updateBooking(booking);
     }
 
     public void removeBooking(int id) {

@@ -2,8 +2,25 @@ package com.example.vehiclereservationapp.model;
 import java.util.Date;
 
 public class Car {
+
+    public Car(int carID, String registrationNumber, String make, String model, int year, String availabilityStatus, Date lastServiceDate, int currentMileage) {
+        this.carID = carID;
+        this.registrationNumber = registrationNumber;
+        this.make = make;
+        this.model = model;
+        this.year = year;
+        this.availabilityStatus = availabilityStatus;
+        this.lastServiceDate = lastServiceDate;
+        this.currentMileage = currentMileage;
+    }
+
+
     private int carID;
     private String registrationNumber;
+
+    public Car() {
+
+    }
 
     public int getCarID() {
         return carID;

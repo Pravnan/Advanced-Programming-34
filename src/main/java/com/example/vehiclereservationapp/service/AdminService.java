@@ -62,6 +62,7 @@ public class AdminService {
 
         // Verify password
         if (verifyPassword(password, admin.getPasswordHash())) {
+            System.out.println(admin.getPasswordHash());
             // Reset failed attempts on successful login
             admin.setFailedAttempts(0);
             admin.setLastLogin(new Timestamp(System.currentTimeMillis()));
@@ -104,7 +105,6 @@ public class AdminService {
         }
     }
 
-    // 🚀 New: Verify Hashed Password
     private boolean verifyPassword(String inputPassword, String storedHash) {
         return hashPassword(inputPassword).equals(storedHash);
     }
